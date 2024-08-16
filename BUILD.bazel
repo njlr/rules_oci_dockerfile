@@ -1,0 +1,91 @@
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
+load("@rules_dotnet//dotnet:defs.bzl", "fsharp_binary", "publish_binary")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_pkg//:mappings.bzl", "strip_prefix")
+load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+load("@configure_buildx//:defs.bzl", "BUILDER_NAME", "TARGET_COMPATIBLE_WITH")
+
+native_binary(
+  name = "buildx",
+  src = select({
+    "@bazel_tools//src/conditions:linux_x86_64": "@buildx_linux_amd64//file",
+    "@bazel_tools//src/conditions:darwin_arm64": "@buildx_darwin_arm64//file",
+    "@bazel_tools//src/conditions:darwin_x86_64": "@buildx_darwin_amd64//file",
+  }),
+  out = "buildx",
+)
+
+fsharp_binary(
+  name = "app",
+  srcs = [
+    "Program.fs",
+  ],
+  target_frameworks = [
+    "net6.0",
+  ],
+  deps = [
+    "@paket.main//microsoft.netcore.app.ref",
+    "@paket.main//fsharp.core",
+  ],
+  targeting_packs = [
+    "@paket.main//microsoft.netcore.app.ref",
+  ],
+)
+
+publish_binary(
+  name = "app-linux-x64",
+  binary = ":app",
+  target_framework = "net6.0",
+  self_contained = True,
+  runtime_identifier = "linux-x64",
+  runtime_packs = [
+    "@paket.main//microsoft.netcore.app.runtime.linux-x64",
+  ],
+)
+
+pkg_tar(
+  name = "app_files",
+  strip_prefix = strip_prefix.from_pkg(),
+  package_dir = "/home",
+  srcs = [
+    ":app-linux-x64",
+  ],
+  include_runfiles = True,
+)
+
+# docker buildx create --name container --driver=docker-container
+run_binary(
+  name = "base",
+  srcs = [ "example/Dockerfile" ],
+  args = [
+    "build",
+    "./example",
+    "--builder",
+    BUILDER_NAME,
+    "--output=type=oci,tar=false,dest=$@",
+  ],
+  execution_requirements = { "local": "1" },
+  mnemonic = "BuildDocker",
+  out_dirs = [ "base" ],
+  target_compatible_with = TARGET_COMPATIBLE_WITH,
+  tool = ":buildx",
+)
+
+oci_image(
+  name = "image",
+  base = ":base",
+  entrypoint = "entrypoint.txt",
+  cmd = "cmd.txt",
+  tars = [
+    ":app_files",
+  ],
+)
+
+oci_tarball(
+  name = "tarball",
+  image = ":image",
+  repo_tags = [
+    "distroless/test:latest",
+  ],
+)
