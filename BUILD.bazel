@@ -63,6 +63,8 @@ run_binary(
     "./example",
     "--builder",
     BUILDER_NAME,
+    "--platform",
+    "linux/amd64",
     "--output=type=oci,tar=false,dest=$@",
   ],
   execution_requirements = { "local": "1" },
