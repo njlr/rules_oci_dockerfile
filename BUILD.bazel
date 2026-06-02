@@ -1,5 +1,6 @@
 load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
 load("@buildx//:defs.bzl", "BUILDER_NAME", "TARGET_COMPATIBLE_WITH")
+load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@rules_dotnet//dotnet:defs.bzl", "fsharp_binary", "publish_binary")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
 load("@rules_pkg//:mappings.bzl", "strip_prefix")
@@ -73,5 +74,16 @@ oci_load(
   image = ":image",
   repo_tags = [
     "bazel/oci_dockerfile_demo:latest",
+  ],
+)
+
+container_structure_test(
+  name = "cst",
+  configs = [ "cst.yaml" ],
+  image = ":image",
+  size = "small",
+  target_compatible_with = [
+    "@platforms//os:linux",
+    "@platforms//cpu:x86_64",
   ],
 )

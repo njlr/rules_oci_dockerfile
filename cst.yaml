@@ -1,0 +1,7 @@
+schemaVersion: "2.0.0"
+
+fileExistenceTests:
+  - name: "git"
+    path: "/usr/bin/git"
+    shouldExist: true
+    isExecutableBy: "group"
