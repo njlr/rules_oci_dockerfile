@@ -43,8 +43,8 @@ run_binary(
   args = [
     "build",
     "./example",
-    "--builder",
-    BUILDER_NAME,
+    # "--builder",
+    # BUILDER_NAME,
     "--platform",
     "linux/amd64",
     "--output=type=oci,tar=false,dest=$@",
