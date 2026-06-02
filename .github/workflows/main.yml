@@ -1,6 +1,7 @@
 name: Main
 
 on:
+  push:
   pull_request:
   merge_group:
   workflow_dispatch:
@@ -8,7 +9,7 @@ on:
 jobs:
 
   main:
-    runs-on: ubuntu-22.04-16core
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
