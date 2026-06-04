@@ -52,6 +52,7 @@ run_binary(
   execution_requirements = {
     "requires-network": "1",
     "no-sandbox": "1",
+    "no-remote-exec": "1",
   },
   mnemonic = "BuildDocker",
   out_dirs = [ "base" ],
