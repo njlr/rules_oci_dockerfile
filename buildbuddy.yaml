@@ -1,0 +1,12 @@
+actions:
+  - name: "Test all targets"
+    triggers:
+      push:
+        branches:
+          - "master"
+      pull_request:
+        branches:
+          - "*"
+    steps:
+      - run: docker buildx inspect builder-docker > /dev/null 2>&1 || docker buildx create --name builder-docker --bootstrap --use
+      - run: "bazel test //..."
