@@ -8,7 +8,7 @@ git_override(
   module_name = "aspect_rules_buildx",
   remote = "https://github.com/njlr/rules_buildx.git",
   # branch = "rules-rework",
-  commit = "ae9abeec72c7425cd7cb4add0d11055e78c2fb1a",
+  commit = "ca536e2cc101999804182d7749d5ad15083ccd43",
 )
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
