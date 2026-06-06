@@ -1,8 +1,15 @@
-bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
+bazel_dep(name = "aspect_rules_buildx", version = "0.0.1")
 bazel_dep(name = "container_structure_test", version = "1.19.1")
 bazel_dep(name = "rules_dotnet", version = "0.20.5")
 bazel_dep(name = "rules_oci", version = "2.2.7")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
+
+git_override(
+  module_name = "aspect_rules_buildx",
+  remote = "https://github.com/njlr/rules_buildx.git",
+  # branch = "rules-rework",
+  commit = "ae9abeec72c7425cd7cb4add0d11055e78c2fb1a",
+)
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
 dotnet.toolchain(dotnet_version = "8.0.415")
@@ -12,7 +19,3 @@ register_toolchains("@dotnet_toolchains//:all")
 
 main_extension = use_extension("//deps:paket.main_extension.bzl", "main_extension")
 use_repo(main_extension, "paket.main")
-
-buildx = use_extension("@@//:buildx.bzl", "buildx")
-buildx.toolchains()
-use_repo(buildx, "buildx")
