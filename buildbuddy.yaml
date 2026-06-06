@@ -8,5 +8,5 @@ actions:
         branches:
           - "*"
     steps:
-      - run: apt-get install -y libicu-dev
+      - run: sudo apt-get update -y && sudo apt-get install -y libicu-dev
       - run: "bazel test //..."
