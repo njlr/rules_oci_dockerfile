@@ -8,5 +8,5 @@ actions:
         branches:
           - "*"
     steps:
-      - run: docker buildx inspect builder-docker > /dev/null 2>&1 || docker buildx create --name builder-docker --bootstrap --use
+      - run: apt-get install -y libicu-dev
       - run: "bazel test //..."
