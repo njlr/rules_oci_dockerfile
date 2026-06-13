@@ -1,5 +1,4 @@
-load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
-load("@buildx//:defs.bzl", "BUILDER_NAME", "TARGET_COMPATIBLE_WITH")
+load("@aspect_rules_buildx//buildx:defs.bzl", "buildx_build")
 load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@rules_dotnet//dotnet:defs.bzl", "fsharp_binary", "publish_binary")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
@@ -37,26 +36,12 @@ pkg_tar(
   include_runfiles = True,
 )
 
-run_binary(
+buildx_build(
   name = "base",
-  srcs = [ "example/Dockerfile" ],
-  args = [
-    "build",
-    "./example",
-    "--builder",
-    BUILDER_NAME,
-    "--platform",
+  dockerfile = "example/Dockerfile",
+  platforms = [
     "linux/amd64",
-    "--output=type=oci,tar=false,dest=$@",
   ],
-  execution_requirements = {
-    "requires-network": "1",
-    "no-sandbox": "1",
-  },
-  mnemonic = "BuildDocker",
-  out_dirs = [ "base" ],
-  target_compatible_with = TARGET_COMPATIBLE_WITH,
-  tool = "@buildx//:buildx",
 )
 
 oci_image(
