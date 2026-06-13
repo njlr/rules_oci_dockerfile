@@ -6,9 +6,8 @@ bazel_dep(name = "rules_pkg", version = "1.0.1")
 
 git_override(
   module_name = "aspect_rules_buildx",
-  remote = "https://github.com/njlr/rules_buildx.git",
-  # branch = "rules-rework",
-  commit = "ae9abeec72c7425cd7cb4add0d11055e78c2fb1a",
+  remote = "https://github.com/aspect-build/rules_buildx.git",
+  commit = "8e35f5787de2bb5041ed137c6234f4f9de99d1ac",
 )
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
